@@ -1,0 +1,75 @@
+链接：https://leetcode.com/problems/binary-tree-preorder-traversal/
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    vector<int> preorderTraversal(TreeNode* root) {
+        vector<int> ans;
+        if(root == NULL)
+            return ans;
+        
+        stack<TreeNode*> nodes;
+        nodes.push(root);
+        TreeNode *curr = root;
+        while(!nodes.empty()){
+            curr = nodes.top();
+            nodes.pop();
+            ans.push_back(curr->val);
+            
+            if(curr->right)
+                nodes.push(curr->right);
+            if(curr->left)
+                nodes.push(curr->left);
+        }
+    }
+};
+
+
+C语言版：
+/** 
+ * Definition for a binary tree node. 
+ * struct TreeNode { 
+ *     int val; 
+ *     struct TreeNode *left; 
+ *     struct TreeNode *right; 
+ * }; 
+ */  
+/** 
+ * Return an array of size *returnSize. 
+ * Note: The returned array must be malloced, assume caller calls free(). 
+ */  
+int* preorderTraversal(struct TreeNode* root, int* returnSize) {  
+  int *ans = NULL;//用于return的动态数组，存放前序遍历的数值结果。  
+  if(root == NULL) return ans;  
+    
+  *returnSize = 0;      
+  struct TreeNode *pop;  
+  struct TreeNode **stack = (struct TreeNode**)malloc(sizeof(struct TreeNode*));//用于存放节点（指针），模拟栈。   
+  int stackLen = 0;  
+  stack[stackLen++] = root;  
+
+  while(stackLen){  
+    ans = (int*)realloc(ans, (*returnSize + 1) * sizeof(int));  
+    pop = stack[--stackLen];  
+    ans[*returnSize] = pop->val;  
+    (*returnSize)++;//*和++的优先级相同【一元运算符】，但其是右结合性。∴表达式*p++里++的优先级高于*，即*p++等价于*(p++)。  
+    
+    if(pop->right){  
+      stack = (struct TreeNode*)realloc(stack, (stackLen+ 1) * sizeof(struct TreeNode));  
+      stack[stackLen++] = pop->right;  
+    }  
+    if(pop->left){  
+      stack = (struct TreeNode*)realloc(stack, (stackLen+ 1) * sizeof(struct TreeNode));  
+      stack[stackLen++] = pop->left;  
+    }  
+  }  
+  free(stack);  
+  return ans;
+}  

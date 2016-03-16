@@ -1,0 +1,58 @@
+链接：https://leetcode.com/problems/invert-binary-tree/
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+ //递归：
+class Solution {
+public:
+    TreeNode* invertTree(TreeNode* root) {
+        if(root == NULL)
+            return root;
+        //写法一：
+        swap(root->left, root->right);
+        invertTree(root->left);
+        invertTree(root->right);
+        
+        /*
+        写法二：
+        TreeNode* temp = invertTree(root->left);
+        root->left = invertTree(root->right);
+        root->right = temp;
+        return root;
+        */
+    }
+};
+//迭代
+class Solution {
+public:
+    TreeNode* invertTree(TreeNode* root) {
+        if(root == NULL)
+            return root;
+            
+        queue<TreeNode*> nodes;
+        nodes.push(root);
+        
+        TreeNode *curr, *tmp;
+        
+        while(!nodes.empty()){
+            curr = nodes.front();
+            nodes.pop();
+            
+            tmp = curr->left;
+            curr->left = curr->right;
+            curr->right = tmp;
+
+            if(curr->left)//此处先左先右都可以。栈实现非递归前序遍历时，要先右后左。
+                nodes.push(curr->left);
+            if(curr->right)
+                nodes.push(curr->right);
+        }
+        return root;
+    }
+};
